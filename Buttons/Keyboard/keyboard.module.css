@@ -1,0 +1,68 @@
+.keyboard {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  row-gap: 0.8rem;
+  padding: 0rem 0.8rem 1rem;
+  height: max-content;
+  width: 100%;
+}
+
+.number_keys {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  height: 60%;
+}
+
+.keyboard > * {
+  display: flex;
+  justify-content: center;
+  column-gap: 0.4rem;
+  transition: column-gap 0.2s;
+}
+
+.input_keys {
+  display: flex;
+  justify-content: center;
+  column-gap: 0.8rem;
+  width: 100%;
+  height: 40%;
+}
+
+.mobile_backspace_button {
+  display: none;
+}
+
+/* Mobile Styles */
+@media screen and (max-width: 540px) {
+  .number_keys {
+    column-gap: 0rem;
+    transition: column-gap 0.6s;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .keyboard {
+    row-gap: 0.6rem;
+    padding: 0 0.4rem 1.2rem;
+  }
+  .number_keys {
+    justify-content: center;
+    flex-wrap: wrap;
+    row-gap: 0.2rem;
+    height: max-content;
+  }
+
+  .number_keys > * {
+    width: 30vw !important;
+    min-width: 30vw !important;
+  }
+}
+
+@media screen and (max-width: 370px) {
+  .keyboard {
+    padding: 1.2rem 0.8rem;
+  }
+}

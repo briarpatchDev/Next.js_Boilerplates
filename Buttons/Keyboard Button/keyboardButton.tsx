@@ -7,15 +7,17 @@ import React, {
   forwardRef,
   useImperativeHandle,
 } from "react";
-import styles from "./button.module.css";
+import styles from "./keyboardButton.module.css";
 import classNames from "classnames";
 
 /*
- *  A button set that can be used almost anywhere
+ *  A keyboard button meant to be used with a global keydown event, overlaps a lot with Button Set
+ *
+ *    keyPressToken? - we pass in a token from the keyboard to fire the onKeydown multiple times in succession
  *
  *    text? / children? - provide content of the button here, or an...
  *    icon? - you can give the button an icon
- *    variant - has 3 variants, primary, secondary, and tertiary
+ *    variant - the kind of keyboard button this represents. The default value is "", but we can add more like
  *    onClick - the function the button performs
  *    onKeyDown? - this is used to possibly give the button keyboard controls
  *    width? - default: a default width, smallest: width is max-content, full: width is 100%
@@ -24,48 +26,47 @@ import classNames from "classnames";
  *
  *    This also has most button html properties as props
  */
-interface ButtonProps {
+
+interface KeyboardButtonProps {
   text?: string;
   children?: React.ReactNode;
   icon?: JSX.Element;
-  variant: "primary" | "secondary" | "tertiary";
-  onClick: (e?: React.MouseEvent<HTMLButtonElement>) => void;
-  onKeyDown?: (e?: React.KeyboardEvent<HTMLButtonElement>) => void;
-  width?: "default" | "smallest" | "full";
+  variant?: "";
+  onClick?: Function;
+  width: "default" | "smallest" | "full";
   ariaLabel?: string;
   type?: "button" | "submit" | "reset";
   form?: string;
   name?: string;
   title?: string;
   disabled?: boolean;
-  draggable?: boolean;
-  autoFocus?: boolean;
   tabIndex?: number;
   id?: string;
+  onKeyDown?: (e?: React.KeyboardEvent<HTMLButtonElement>) => void;
+  keyPressToken?: number | string;
   style?: React.CSSProperties;
 }
 
-export function Button(
+function KeyboardButton(
   {
     text,
     children,
     icon,
-    variant,
-    width = "default",
+    variant = "",
     onClick,
-    onKeyDown,
+    width = "default",
     ariaLabel,
     type = "button",
     form,
     name,
     title,
     disabled = false,
-    draggable,
-    autoFocus = false,
     tabIndex,
     id,
+    onKeyDown,
+    keyPressToken,
     style,
-  }: ButtonProps,
+  }: KeyboardButtonProps,
   ref: React.Ref<HTMLButtonElement>
 ) {
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -73,6 +74,7 @@ export function Button(
 
   const timeoutRef = useRef<NodeJS.Timeout>(undefined);
   //const timeoutRef = useRef<ReturnType<typeof setTimeout>>();
+  const prevToken = useRef(keyPressToken);
 
   const [active, setActive] = useState(false);
   const enabled = useRef(true);
@@ -93,7 +95,7 @@ export function Button(
       setActive(false);
       timeoutRef.current = setTimeout(() => {
         setActive(true);
-      }, 40);
+      }, 80);
     }
   };
 
@@ -105,7 +107,7 @@ export function Button(
       timeoutRef.current = setTimeout(() => {
         setActive(false);
         onClick?.();
-      }, 40);
+      }, 80);
     }
   };
 
@@ -128,7 +130,7 @@ export function Button(
         enabled.current = true;
         enterKeyDown.current = false;
         onClick?.();
-      }, 40);
+      }, 80);
     }
   };
 
@@ -159,6 +161,19 @@ export function Button(
     }
   };
 
+  useEffect(() => {
+    // Tracking the previous token lets us properly handle multiple instances of a single button
+    if (keyPressToken && keyPressToken !== prevToken.current) {
+      setActive(false);
+      setActive(true);
+      timeoutRef.current = setTimeout(() => {
+        setActive(false);
+        onClick?.();
+      }, 160);
+    }
+    prevToken.current = keyPressToken;
+  }, [keyPressToken]);
+
   return (
     <button
       ref={buttonRef}
@@ -183,15 +198,17 @@ export function Button(
       form={form}
       disabled={disabled}
       {...(disabled ? { "aria-disabled": true } : {})}
-      draggable={draggable}
-      autoFocus={autoFocus}
       tabIndex={disabled ? -1 : tabIndex}
       style={{ ...style }}
     >
       {icon && <div className={styles.icon_container}>{icon}</div>}
-      {children || text}
+      {(children || text) && (
+        <div className={styles.text_wrapper}>{children || text}</div>
+      )}
     </button>
   );
 }
 
-export default forwardRef<HTMLButtonElement, ButtonProps>(Button);
+export default forwardRef<HTMLButtonElement, KeyboardButtonProps>(
+  KeyboardButton
+);

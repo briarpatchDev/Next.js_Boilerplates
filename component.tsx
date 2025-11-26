@@ -10,7 +10,7 @@ interface ComponentProps {
 }
 
 export default function Component({ style }: ComponentProps) {
-  const [property, setProperty] = useState<JSX.Element>(<div>Welcome!</div>);
+  const [property, setProperty] = useState(<div>Welcome!</div>);
 
   //componentDidMount, runs when component mounts and returns on dismount
   useEffect(() => {

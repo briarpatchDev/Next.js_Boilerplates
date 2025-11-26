@@ -1,5 +1,4 @@
 import React from "react";
-import BlankLayout from "@/app/layouts/BlankLayout";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -13,9 +12,9 @@ export default function Layout({
   children: React.ReactNode;
 }>) {
   return (
-    <BlankLayout>
-      <div id="modal-root"></div>
+    <>
+      <div id="modal"></div>
       {children}
-    </BlankLayout>
+    </>
   );
 }

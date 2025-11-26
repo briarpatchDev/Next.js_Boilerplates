@@ -1,5 +1,5 @@
 .button {
-  --height: 4rem;
+  --height: 4.4rem;
   --buttonColor: rgb(45, 104, 200);
   all: unset;
   box-sizing: border-box;
@@ -10,6 +10,7 @@
   max-width: 24rem;
   padding: 0.4rem 1.2rem;
   display: flex;
+  flex-shrink: 0;
   justify-content: center;
   align-items: center;
   column-gap: 1.2rem;
@@ -24,12 +25,8 @@
   -webkit-user-select: none;
   transform: translateZ(0); /* Helps Mobile */
   will-change: transform;
-}
-
-.primary:hover,
-.secondary:hover,
-.tertiary:hover {
-  transition: all 0.15s;
+  /* color: light-dark(var(--grey-text), var(--grey-text)); */
+  color: light-dark(rgb(240, 240, 240), rgb(230, 230, 230));
 }
 
 .default {
@@ -42,7 +39,7 @@
 }
 
 .button:focus-visible {
-  outline: 0.1rem solid blue;
+  outline: 0.1rem solid var(--focus-color);
   outline-offset: 0.2rem;
 }
 
@@ -53,38 +50,47 @@
   box-shadow: 0px 1px 0px 0px rgba(0, 0, 0, 0.3);
 }
 
+.primary:hover,
+.secondary:hover,
+.tertiary:hover {
+  transition: all 0.15s;
+}
+
 .primary {
   border: 0.2rem solid rgba(0, 0, 0, 0);
   font-weight: bolder;
-  color: white;
   background-color: var(--buttonColor);
-}
-
-.primary:hover {
-  background-color: rgb(27, 83, 173);
-  filter: brightness(1.1);
 }
 
 .secondary {
   border: 0.2rem solid var(--buttonColor);
-  color: var(--buttonColor);
+  /* color: light-dark(var(--buttonColor), var(--grey-text)); */
+  color: light-dark(var(--buttonColor), rgb(230, 230, 230));
   font-weight: bolder;
-  background-color: white;
-}
-
-.secondary:hover {
-  background-color: rgb(245, 245, 245);
+  background-color: var(--background);
 }
 
 .tertiary {
   background-color: transparent;
-  border: 0.1rem solid rgba(0, 0, 0, 0.4);
-  color: rgba(0, 0, 0, 0.8);
+  border: 0.1rem solid light-dark(rgba(0, 0, 0, 0.4), rgba(255, 255, 255, 0.4));
+  color: light-dark(rgba(0, 0, 0, 0.8), rgba(255, 255, 255, 0.8));
 }
 
-.tertiary:hover {
-  border-color: var(--buttonColor);
-  color: rgba(0, 0, 0, 1);
+/* Stops button from changing color after click on IOS */
+/* We can either extend or possibly remove this part */
+@media (hover: hover) {
+  .primary:hover {
+    color: light-dark(rgb(255, 255, 255), rgb(245, 245, 245));
+    filter: brightness(1.1);
+  }
+  .secondary:hover {
+    background-color: light-dark(rgb(245, 245, 245), rgb(60, 60, 60));
+    color: light-dark(var(--buttonColor), rgb(245, 245, 245));
+  }
+  .tertiary:hover {
+    border-color: light-dark(var(--buttonColor), rgb(240, 240, 240));
+    color: light-dark(rgba(0, 0, 0, 1), rgba(255, 255, 255));
+  }
 }
 
 .text_container {
@@ -104,34 +110,20 @@
   object-position: center center;
 }
 
-@media (prefers-color-scheme: dark) {
-  .primary {
-    background-color: rgb(75, 150, 255);
-  }
+.disabled {
+  background-color: transparent;
+  cursor: auto;
+  color: rgb(150, 150, 150);
+  border-color: rgb(150, 150, 150);
+  border-width: 0rem;
+  border-top-width: 0.05rem;
+  font-weight: 100;
+  opacity: 0.6;
+}
 
-  .primary:hover {
-    background-color: rgb(47, 117, 215);
-  }
-
-  .secondary {
-    border-color: rgb(75, 150, 255);
-    background-color: var(--buttonBackground);
-    color: white;
-  }
-
-  .secondary:hover {
-    background-color: rgb(30, 30, 30);
-  }
-
-  .tertiary {
-    background-color: transparent;
-    border: 0.1rem solid rgba(255, 255, 255, 0.4);
-    color: rgba(255, 255, 255, 0.8);
-  }
-
-  .tertiary:hover {
-    background-color: transparent;
-    border-color: var(--buttonColor);
-    color: rgba(255, 255, 255);
-  }
+.disabled:hover {
+  background-color: transparent;
+  color: rgb(150, 150, 150);
+  border-color: rgb(150, 150, 150);
+  filter: brightness(1);
 }
