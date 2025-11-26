@@ -80,7 +80,7 @@ export default function Navbar() {
   //Closes the menu
   function closeMenu() {
     setMenuClosing(true);
-    document.body.style.overflow = "auto";
+    document.body.style.overflow = "";
     setTimeout(() => {
       setMenuOpen(false);
       setMenuClosing(false);

@@ -35,7 +35,7 @@ export default function Modal({ children, closeFunction }: ModalProps) {
     document.body.style.overflow = "hidden";
     document.addEventListener("keydown", escapeKey, true);
     return () => {
-      document.body.style.overflow = "auto";
+      document.body.style.overflow = "";
       document.removeEventListener("keydown", escapeKey, true);
     };
   }, [escapeKey]);

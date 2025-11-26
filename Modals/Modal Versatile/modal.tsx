@@ -89,7 +89,7 @@ export default function Modal({
       document.addEventListener("keydown", escapeKey, true);
     }
     return () => {
-      document.body.style.overflow = "auto";
+      document.body.style.overflow = "";
       if (closeOnEscape) {
         document.removeEventListener("keydown", escapeKey, true);
       }

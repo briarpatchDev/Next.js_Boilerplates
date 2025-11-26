@@ -191,7 +191,7 @@ export default function ContextMenu({ menu, targetRef }: ContextMenuProps) {
 
   useEffect(() => {
     if (!menuRef.current) {
-      document.body.style.overflow = "auto";
+      document.body.style.overflow = "";
       return;
     }
     const rect = menuRef.current.getBoundingClientRect();
