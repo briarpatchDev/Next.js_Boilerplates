@@ -18,7 +18,7 @@ import classNames from "classnames";
  *    variant - has 3 variants, primary, secondary, and tertiary
  *    onClick - the function the button performs
  *    onKeyDown? - this is used to possibly give the button keyboard controls
- *    width? - default: a default width, smallest: width is max-content, full: width is 100%
+ *    width? - default: a default width | smallest: button will be as small as possible | full: 100% width | number: the percent width
  *    ariaLabel? - gives the button an aria-label
  *    style?  - any additional CSS stylings
  *
@@ -31,7 +31,7 @@ interface ButtonProps {
   variant: "primary" | "secondary" | "tertiary";
   onClick: (e?: React.MouseEvent<HTMLButtonElement>) => void;
   onKeyDown?: (e?: React.KeyboardEvent<HTMLButtonElement>) => void;
-  width?: "default" | "smallest" | "full";
+  width?: "default" | "smallest" | "full" | number;
   ariaLabel?: string;
   type?: "button" | "submit" | "reset";
   form?: string;
@@ -186,7 +186,9 @@ export function Button(
       draggable={draggable}
       autoFocus={autoFocus}
       tabIndex={disabled ? -1 : tabIndex}
-      style={{ ...style }}
+      style={
+        typeof width === "number" ? { width: `${width}%`, ...style } : style
+      }
     >
       {icon && <div className={styles.icon_container}>{icon}</div>}
       {children || text}
