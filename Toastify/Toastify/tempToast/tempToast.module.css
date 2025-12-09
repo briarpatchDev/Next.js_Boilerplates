@@ -1,0 +1,11 @@
+.temp_toast {
+  background-color: rgb(38, 82, 114);
+  color: var(--grey-text);
+  color: light-dark(rgb(240, 240, 240), rgb(230, 230, 230));
+  font-size: 2.4rem;
+  border-radius: 3.6rem;
+  padding: 1.6rem 2.4rem;
+  border: 0.05rem solid rgb(50, 50, 50);
+  margin: 1.4rem;
+  box-shadow: 0.2rem 0.3rem 0.2rem 0.1rem rgba(0, 0, 0, 0.5);
+}

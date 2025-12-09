@@ -1,0 +1,61 @@
+/* This is the default toastify class name found in the npm's css file */
+.Toastify__toast-container {
+  z-index: 10;
+}
+
+/* This is a default toastify class name found in the npm's css file */
+.Toastify__toast-container--top-center {
+  top: 20%;
+  left: 50%;
+  transform: translateX(-50%);
+  align-items: center;
+}
+
+.error_toast_enter {
+  animation: error_toast_enter 0.3s;
+  animation-timing-function: ease-out;
+}
+
+.error_toast_exit {
+  animation: error_toast_exit 0.3s;
+  animation-timing-function: ease-out;
+  animation-fill-mode: forwards;
+}
+
+@keyframes error_toast_enter {
+  0% {
+    opacity: 0;
+    transform: translateX(4rem);
+  }
+  14% {
+    transform: translateX(-4rem);
+  }
+  28% {
+    transform: translateX(3rem);
+  }
+  43% {
+    transform: translateX(-3rem);
+  }
+  57% {
+    transform: translateX(2rem);
+  }
+  71% {
+    transform: translateX(-2rem);
+  }
+  85% {
+    transform: translateX(1rem);
+  }
+  100% {
+    opacity: 100%;
+    transform: translateX(0rem);
+  }
+}
+
+@keyframes error_toast_exit {
+  0% {
+    opacity: 100%;
+  }
+  100% {
+    opacity: 0%;
+  }
+}

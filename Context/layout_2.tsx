@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "@/app/globals.css";
-import { UserProvider } from "@/app/functions/context/userContext";
+import { UserProvider } from "@/app/contexts/userContext";
 
 export const metadata: Metadata = {
   title: "Context",
@@ -42,10 +42,10 @@ export default async function MainLayout({
 }>) {
   const user = await getUser();
   return (
-    <html lang="en">
-      <body>
-        <UserProvider user={user}>{children}</UserProvider>
-      </body>
-    </html>
+    <UserProvider user={user}>
+      <html lang="en">
+        <body>{children}</body>
+      </html>
+    </UserProvider>
   );
 }

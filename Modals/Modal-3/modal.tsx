@@ -4,8 +4,6 @@ import React, {
   useEffect,
   useRef,
   useCallback,
-  createContext,
-  useContext,
 } from "react";
 import styles from "./modal-v2.module.css";
 import { FocusTrap } from "focus-trap-react";

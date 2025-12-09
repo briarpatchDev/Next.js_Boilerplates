@@ -116,6 +116,7 @@ export default function TabContainer({
           {tabs.map((tab, index) => (
             <button
               key={index}
+              id={`tab-${index}`}
               className={classNames(styles.tab, {
                 [styles.active]: currentTab === index,
               })}

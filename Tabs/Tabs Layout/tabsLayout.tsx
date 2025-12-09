@@ -114,7 +114,7 @@ export default function TabContainer({ tabs, children }: TabContainerProps) {
       style={{ opacity: initialized ? "1" : "0" }}
     >
       <div className={styles.tabs_wrapper} ref={tabsWrapperRef}>
-        <div className={styles.tabs} role="tablist">
+        <nav className={styles.tabs} aria-label="Page navigation">
           {tabs.map((tab, index) => (
             <Link
               key={index}
@@ -126,9 +126,7 @@ export default function TabContainer({ tabs, children }: TabContainerProps) {
               ref={(el) => {
                 tabRefs.current[index] = el;
               }}
-              role="tab"
-              aria-controls={`tabpanel-${index}`}
-              aria-selected={currentTab === index}
+              aria-current={currentTab === index ? "page" : undefined}
               style={tab.style}
               onKeyDown={(e) => handleKeydown(e, index)}
             >
@@ -136,17 +134,10 @@ export default function TabContainer({ tabs, children }: TabContainerProps) {
             </Link>
           ))}
           <div className={styles.indicator} style={indicatorStyle}></div>
-        </div>
+        </nav>
       </div>
       <div className={styles.tab_panels}>
-        <div
-          role="tabpanel"
-          id={`tabpanel-${currentTab}`}
-          aria-labelledby={`tab-${currentTab}`}
-          className={styles.tab_panel}
-        >
-          {children}
-        </div>
+        <div className={styles.tab_panel}>{children}</div>
       </div>
     </div>
   );

@@ -64,8 +64,10 @@ export default function Toast({
   return (
     <div
       className={classNames(styles.toast, styles[type])}
-      role="alert"
-      aria-live={type === "error" ? "assertive" : "polite"}
+      role={type === "error" || type === "warning" ? "alert" : "status"}
+      aria-live={
+        type === "error" || type === "warning" ? "assertive" : "polite"
+      }
       aria-atomic="true"
     >
       <div className={classNames(styles.icon_container, styles[type])}>
