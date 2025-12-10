@@ -1,19 +1,5 @@
-.error {
+.error_wrapper {
+  flex: 1;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  row-gap: 0.6rem;
-  border: var(--smallBorder);
-  padding: 1.6rem;
-  border-radius: 1rem;
-  width: max-content;
-  max-width: 36rem;
-}
-
-.error h1 {
-  font-weight: 500;
-  font-size: 1.8rem;
-  display: flex;
-  text-align: center;
-  text-wrap: balance;
+  justify-content: center;
 }

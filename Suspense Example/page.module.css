@@ -1,0 +1,8 @@
+.page {
+  display: flex;
+  justify-content: center;
+  padding-top: 16rem;
+  width: 100vw;
+  min-height: max-content;
+  height: 100vh;
+}

@@ -1,19 +1,27 @@
 "use client";
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import Link from "next/link";
 import styles from "./errorExpected.module.css";
-import Button from "../../Buttons/Button Set 1/button";
+import MessageBox from "@/app/ui/Message Box/messageBox";
 
 // An error meant to show up after failed data fetches
 export default function ExpectedError({
   reset,
+  errorMessage = `Something went wrong while loading`,
+  buttonText = `Refresh`,
 }: {
-  reset: (e?: React.Event) => void;
+  reset: (e?: React.MouseEvent) => void;
+  errorMessage?: string;
+  buttonText?: string;
 }) {
   return (
-    <div className={styles.error} role="alert" aria-live="assertive">
-      <h1>Something went wrong loading more stuff.</h1>
-      <Button text={`Try again`} variant={"primary"} onClick={reset} />
+    <div className={styles.error_wrapper}>
+      <MessageBox
+        onClick={reset}
+        message={errorMessage}
+        buttonText={buttonText}
+        ariaLive="assertive"
+        role="alert"
+      />
     </div>
   );
 }

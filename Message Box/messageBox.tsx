@@ -22,12 +22,12 @@ import classNames from "classnames";
  */
 interface MessageBoxProps {
   message: string;
-  buttonMessage?: string;
+  buttonText?: string;
   buttonAriaLabel?: string;
   buttonWidth?: "default" | "smallest" | "full" | number;
   buttonStyle?: React.CSSProperties;
   href?: string;
-  onClick?: () => void;
+  onClick?: (e?: React.MouseEvent) => void;
   ariaLabel?: string;
   ariaLive: "off" | "assertive" | "polite" | undefined; //Typically will be "polite", but occasionally "assertive" with errors
   role: "status" | "alert" | undefined; // This will typically be "status", but occassionally "alert"
@@ -36,7 +36,7 @@ interface MessageBoxProps {
 
 export default function MessageBox({
   message,
-  buttonMessage,
+  buttonText,
   buttonAriaLabel,
   buttonWidth = 80,
   buttonStyle,
@@ -56,11 +56,11 @@ export default function MessageBox({
       role={role}
     >
       <div className={styles.message}>{message}</div>
-      {buttonMessage &&
+      {buttonText &&
         (href ? (
           <LinkButton
             href={href}
-            text={buttonMessage}
+            text={buttonText}
             buttonStyle={{ ...buttonStyle }}
             width={buttonWidth}
             ariaLabel={buttonAriaLabel}
@@ -69,7 +69,7 @@ export default function MessageBox({
           <Button
             variant={"primary"}
             onClick={onClick}
-            text={buttonMessage}
+            text={buttonText}
             style={{ ...buttonStyle }}
             width={buttonWidth}
             ariaLabel={buttonAriaLabel}
