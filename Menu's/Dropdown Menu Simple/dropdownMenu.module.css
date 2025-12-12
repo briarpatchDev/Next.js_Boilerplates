@@ -1,24 +1,46 @@
 .dropdown_menu_wrapper {
   position: relative;
+  font-family: "Gabarito", "Manrope", "Roboto", sans-serif;
+  --focus-color: rgba(47, 96, 149, 1);
+  --grey-text: light-dark(rgb(240, 240, 240), rgb(230, 230, 230));
+  --border-color: light-dark(rgb(50, 50, 50), rgb(220, 220, 220));
+  --smallBorder: 0.05rem solid var(--border-color);
+  --background-color: rgb(69, 59, 71);
 }
 
 .dropdown_menu_wrapper > button {
   all: unset;
+  font-family: "Gabarito", "Manrope", "Roboto", sans-serif;
   box-sizing: border-box;
   cursor: pointer;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 3.6rem;
-  width: 7.2rem;
+  height: 4.8rem;
+  width: max-content;
+  padding: 0.4rem 1.2rem;
   font-size: 1.8rem;
-  background-color: rgb(69, 59, 71);
+  background-color: var(--background-color);
+  border: var(--smallBorder);
   border: 0.05rem solid light-dark(black, rgb(140, 140, 140));
-  color: white;
+  color: var(--grey-text);
+  transition: all 0.1s;
+}
+
+.dropdown_menu_wrapper > button > svg {
+  height: 100%;
+  width: auto;
+  fill: var(--grey-text);
+  transition: fill 0.3s;
 }
 
 .dropdown_menu_wrapper > button:focus-visible {
-  outline: 0.1rem solid blue;
+  outline: 0.3rem solid var(--focus-color);
+  outline-offset: 0.1rem;
+}
+
+.dropdown_menu_wrapper > * > button:focus-visible {
+  outline: 0.1rem solid var(--focus-color);
   outline-offset: 0.2rem;
 }
 
@@ -28,8 +50,7 @@
   flex-direction: column;
   border-radius: 0.4rem;
   padding: 0.2rem 0;
-  background-color: light-dark(rgb(245, 245, 245), rgb(95, 95, 95));
-  color: light-dark(black, white);
+  background-color: light-dark(rgb(250, 250, 250), rgb(95, 95, 95));
   border: 0.03rem solid light-dark(black, rgb(200, 200, 200));
   z-index: 1000;
   left: 50%;
@@ -41,11 +62,12 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  color: light-dark(black, var(--grey-text));
 }
 
 .dropdown_menu li,
 .dropdown_menu .space {
-  width: 16rem;
+  width: 14rem;
 }
 
 .dropdown_menu .space {
@@ -54,7 +76,7 @@
 
 .dropdown_menu li {
   border-radius: 0.4rem;
-  height: 2.4rem;
+  height: 4rem;
   margin: 0 0.2rem;
   list-style: none;
   position: relative;
@@ -73,16 +95,25 @@
     opacity: 0;
   }
   80% {
-    height: 3rem;
+    height: 4.8rem;
   }
   100% {
-    height: 2.4rem;
+    height: 4rem;
     opacity: 1;
   }
 }
 
 .closing .dropdown_menu > li {
-  animation: close 0.15s forwards;
+  animation: close 0.2s forwards;
+}
+
+.closing .dropdown_menu > li .li_content_wrapper,
+.closing .dropdown_menu > li a {
+  animation: closeFontSize 0.2s forwards;
+}
+
+.dropdown_menu a {
+  user-select: none;
 }
 
 .closing .dropdown_menu {
@@ -91,15 +122,21 @@
 
 @keyframes close {
   0% {
-    height: 2.4rem;
-    opacity: 0;
-  }
-  20% {
-    height: 3rem;
+    height: 4.2rem;
+    opacity: 1;
   }
   100% {
     height: 0rem;
     opacity: 0;
+  }
+}
+
+@keyframes closeFontSize {
+  0% {
+    font-size: 1.6rem;
+  }
+  100% {
+    font-size: 0rem;
   }
 }
 
@@ -108,26 +145,44 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 1.4rem;
+  font-size: 1.6rem;
   user-select: none;
   height: 100%;
   width: 100%;
   padding: 0 0.8rem;
   border-radius: 0.4rem;
   position: relative;
+  cursor: pointer;
 }
 
 .dropdown_menu li:focus > .li_content_wrapper {
   outline: none;
-  background-color: rgb(101, 88, 103);
-  color: light-dark(white, white);
+  background-color: var(--background-color);
+  color: var(--grey-text);
 }
 
 .dropdown_menu li:focus,
-.dropdown_menu a:focus {
+.dropdown_menu li a:focus-within {
   outline: none;
-  background-color: rgb(101, 88, 103);
-  color: light-dark(white, white);
+  background-color: var(--background-color);
+  color: var(--grey-text);
+}
+
+.dropdown_menu li.active > .li_content_wrapper {
+  outline: none;
+  background-color: var(--background-color);
+  color: var(--grey-text);
+}
+
+.dropdown_menu li:hover {
+  background-color: light-dark(rgb(210, 210, 210), rgb(75, 75, 75));
+}
+
+.dropdown_menu li.active,
+.dropdown_menu li.active a {
+  outline: none;
+  background-color: var(--background-color);
+  color: var(--grey-text);
 }
 
 .dropdown_menu .line {
@@ -139,3 +194,15 @@
   background-color: light-dark(rgb(180, 180, 180), rgb(60, 60, 60));
 }
 
+@media (hover: hover) {
+  .dropdown_menu_wrapper:hover > button {
+    color: white;
+    filter: brightness(1.15);
+    transition: all 0.1s;
+  }
+
+  .dropdown_menu_wrapper:hover > button svg {
+    fill: white;
+    transition: all 0.1s;
+  }
+}

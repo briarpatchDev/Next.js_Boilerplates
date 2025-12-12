@@ -23,13 +23,13 @@ const rightArrow = (
 // Performs a function when you click on this menu item
 export interface ActionItem {
   type: "action";
-  label: string;
-  onClick: (e?: React.Event) => void;
+  label: React.ReactNode;
+  onClick: () => void;
 }
 // Opens a submenu when you click on this menu item
 export interface SubmenuItem {
   type: "submenu";
-  label: string;
+  label: React.ReactNode;
   submenu: Item[];
 }
 // Lets us add a divider line or a blank space to our menu
@@ -67,6 +67,8 @@ export function Item({
   direction,
 }: MenuItemProps) {
   const [submenu, setSubmenu] = useState(false);
+  const [isActive, setIsActive] = useState(false);
+
   let itemsRef: React.RefObject<HTMLLIElement>[] | undefined;
   if (item.type === "submenu") {
     itemsRef = item.submenu.map((item) => React.createRef<HTMLLIElement>());
@@ -82,6 +84,7 @@ export function Item({
   }
 
   function handleMouseEnter() {
+    setIsActive(true);
     if (
       itemRef.current?.matches(":hover") &&
       !submenuContainerRef.current?.matches(":hover")
@@ -90,11 +93,16 @@ export function Item({
     }
   }
 
+  function handleMouseLeave() {
+    setIsActive(false);
+  }
+
   function handleBlur() {
     const isItemFocused =
       itemRef.current?.matches(":focus-visible") ||
       itemRef.current?.querySelector(":focus-visible");
     if (!isItemFocused) {
+      setIsActive(false);
       setSubmenu(false);
     }
   }
@@ -129,6 +137,17 @@ export function Item({
         }
         case "Escape": {
           closeFunction();
+          break;
+        }
+        case "Backspace": {
+          if (parent && parent.current) {
+            // In a submenu - go back to parent
+            parent.current.focus();
+          } else {
+            // At top level - close entirely
+            closeFunction();
+          }
+          break;
         }
         default: {
         }
@@ -167,6 +186,17 @@ export function Item({
       }
       case "Escape": {
         closeFunction();
+        break;
+      }
+      case "Backspace": {
+        if (parent && parent.current) {
+          // In a submenu - go back to parent
+          parent.current.focus();
+        } else {
+          // At top level - close entirely
+          closeFunction();
+        }
+        break;
       }
       default: {
       }
@@ -183,11 +213,15 @@ export function Item({
     <li
       tabIndex={0}
       onMouseEnter={handleMouseEnter}
-      onMouseLeave={updateSubmenu}
+      onMouseLeave={() => {
+        handleMouseLeave();
+        updateSubmenu();
+      }}
       onFocus={updateSubmenu}
       onBlur={() => setTimeout(handleBlur, 0)}
       onKeyDown={handleKeydownSubmenu}
       className={classNames({
+        [styles.active]: isActive,
         [styles.submenu_open]: submenu,
         [styles.flip_arrow]: direction === "left",
       })}
@@ -214,10 +248,16 @@ export function Item({
     </li>
   ) : (
     <li
+      className={classNames({ [styles.active]: isActive })}
       role="menuitem"
       tabIndex={0}
       ref={itemRef}
-      onMouseEnter={() => itemRef.current?.focus()}
+      onMouseEnter={() => {
+        setIsActive(true);
+        itemRef.current?.focus();
+      }}
+      onMouseLeave={handleMouseLeave}
+      onBlur={() => setTimeout(handleBlur, 0)}
       onClick={() => {
         item.onClick();
         closeFunction();
@@ -267,7 +307,14 @@ export function SubMenu({
     setTranslateY(offsetY);
   }, []);
 
-  const actionableIndexes = submenu
+  const actionableIndexes = useRef(
+    submenu
+      .map((item, i) => (item.type !== "decoration" ? i : null))
+      .filter((i): i is number => i !== null)
+  );
+
+  // Update ref when submenu changes
+  actionableIndexes.current = submenu
     .map((item, i) => (item.type !== "decoration" ? i : null))
     .filter((i): i is number => i !== null);
 
@@ -297,8 +344,8 @@ export function SubMenu({
             direction={direction}
             parent={parent}
             siblings={itemRefs}
-            itemRef={itemRefs[actionableIndexes.indexOf(i)]}
-            index={actionableIndexes.indexOf(i)}
+            itemRef={itemRefs[actionableIndexes.current.indexOf(i)]}
+            index={actionableIndexes.current.indexOf(i)}
             key={i}
           />
         );
@@ -391,6 +438,10 @@ export default function ContextMenu({ menu, targetRef }: ContextMenuProps) {
     };
   }, []);
 
+  function closeMenu() {
+    setVisible(false);
+  }
+
   //Focuses the first menu item if you hit arrow down if nothing else is focused
   function handleArrowDown(e: globalThis.KeyboardEvent) {
     const isMenuFocused =
@@ -405,7 +456,7 @@ export default function ContextMenu({ menu, targetRef }: ContextMenuProps) {
   const escapeKey = useCallback(
     (e: KeyboardEvent | globalThis.KeyboardEvent) => {
       if (e.key === "Escape") {
-        setVisible(false);
+        closeMenu();
       }
     },
     []
@@ -414,16 +465,23 @@ export default function ContextMenu({ menu, targetRef }: ContextMenuProps) {
   //Closes the menu when user clicks something
   const handleClick = useCallback((e: MouseEvent) => {
     if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
-      setVisible(false);
+      closeMenu();
     }
   }, []);
 
-  const actionableIndexes = menu
+  const actionableIndexes = useRef(
+    menu
+      .map((item, i) => (item.type !== "decoration" ? i : null))
+      .filter((i): i is number => i !== null)
+  );
+
+  // Update ref when menu changes
+  actionableIndexes.current = menu
     .map((item, i) => (item.type !== "decoration" ? i : null))
     .filter((i): i is number => i !== null);
 
-  const itemRefs = useRef<Array<React.RefObject<HTMLLIElement>>>(
-    actionableIndexes.map(() => React.createRef<HTMLLIElement>())
+  const itemRefs = useRef(
+    actionableIndexes.current.map(() => React.createRef<HTMLLIElement>())
   );
 
   return (
@@ -450,10 +508,10 @@ export default function ContextMenu({ menu, targetRef }: ContextMenuProps) {
           return (
             <Item
               item={item}
-              itemRef={itemRefs.current[actionableIndexes.indexOf(i)]}
-              closeFunction={() => setVisible(false)}
+              itemRef={itemRefs.current[actionableIndexes.current.indexOf(i)]}
+              closeFunction={closeMenu}
               direction={direction}
-              index={actionableIndexes.indexOf(i)}
+              index={actionableIndexes.current.indexOf(i)}
               siblings={itemRefs.current}
               key={i}
             />

@@ -9,7 +9,11 @@ export const metadata: Metadata = {
 };
 
 export default function Page() {
-  return <div className={styles.page}>
-
-  </div>
+  return (
+    <div className={styles.page}>
+      <div className={styles.wrapper}>
+        
+      </div>
+    </div>
+  );
 }

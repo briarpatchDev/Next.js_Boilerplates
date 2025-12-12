@@ -1,5 +1,11 @@
 "use client";
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  useMemo,
+} from "react";
 import styles from "./clickPopover.module.css";
 import classNames from "classnames";
 import { throttle } from "lodash";
@@ -26,7 +32,7 @@ import { FocusTrap } from "focus-trap-react";
 interface ClickPopoverProps {
   children: React.ReactNode;
   panel: React.ReactNode;
-  panelId?: string;
+  panelId: string;
   direction: Direction;
   offset?: number;
   shiftRem?: number;
@@ -34,7 +40,7 @@ interface ClickPopoverProps {
   shiftPanelPercent?: number;
   fadeEffect?: boolean;
   closingTime?: number;
-  panelRole?: string;
+  panelRole?: "dialog" | "menu";
   ariaLabelChildren?: string;
   ariaLabelPanel?: string;
   containerRef?: React.RefObject<HTMLElement>;
@@ -344,6 +350,8 @@ export default function ClickPopover({
       className={styles.expandable}
       aria-label={ariaLabelChildren}
       aria-describedby={panelId}
+      aria-haspopup={panelRole}
+      aria-controls={active ? panelId : undefined}
       role="button"
       onKeyDown={
         focusable

@@ -139,6 +139,14 @@
   color: light-dark(white, white);
 }
 
+.dropdown_menu li:hover {
+  background-color: light-dark(rgb(210, 210, 210), rgb(75, 75, 75));
+}
+
+.dropdown_menu .active:hover {
+  background-color: rgb(101, 88, 103);
+}
+
 .li_content_wrapper :focus .right_arrow {
   fill: white;
 }

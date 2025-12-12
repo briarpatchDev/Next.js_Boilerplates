@@ -1,0 +1,29 @@
+.expandable {
+  position: relative;
+}
+
+.panel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 500;
+  transition: opacity 0.3s;
+}
+
+.appear {
+  animation: appear 0.3s;
+}
+
+@keyframes appear {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.closing {
+  opacity: 0;
+  transition: opacity 0.3s;
+}

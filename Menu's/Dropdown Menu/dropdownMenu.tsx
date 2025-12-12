@@ -20,19 +20,19 @@ const rightArrow = (
 // A menu item that is a link
 export interface LinkItem {
   type: "link";
-  label: string;
+  label: React.ReactNode;
   href: string;
 }
 // Performs a function when you click on this menu item
 export interface ActionItem {
   type: "action";
-  label: string;
-  onClick: (e?: React.Event) => void;
+  label: React.ReactNode;
+  onClick: (e?: React.MouseEvent) => void;
 }
 // Opens a submenu when you click on this menu item
 export interface SubmenuItem {
   type: "submenu";
-  label: string;
+  label: React.ReactNode;
   submenu: Item[];
 }
 // Lets us add a divider line or a blank space to our menu
@@ -45,16 +45,21 @@ export type Item = LinkItem | ActionItem | SubmenuItem | Decoration;
 /* Used to create each item in the menu
  *  item - the inputed MenuItem: ActionMenuItem | SubmenuMenuItem | DecorationMenuItem;
  *  itemRef - an entry from itemsRef to keep track of actionable items vs decorations
+ *  isClosing - true when the submenu is closing, prevents menu from reopening
  *  onClose - the functions that hides visibility
+ *  onCloseAndFocus - function that refocuses original button when user ESC's the menu
  *  index - the index we get from the map when creating a submenu of menuItems
  *  parent - a ref to the parent menuItem of this item
+ *  closing - true if the menu the item is in is closing
  *  siblings - an array ref of the siblings of this item
  *  direction - the direction the menu will face in (affects arrows and keyboard inputs)
  * */
 interface MenuItemProps {
   item: Item;
   itemRef: React.RefObject<HTMLLIElement>;
+  isClosing: boolean;
   onClose: () => void;
+  onCloseAndFocus: () => void;
   index: number;
   parent?: React.RefObject<HTMLLIElement>;
   siblings?: React.RefObject<HTMLLIElement>[];
@@ -63,7 +68,9 @@ interface MenuItemProps {
 export function Item({
   item,
   itemRef,
+  isClosing,
   onClose,
+  onCloseAndFocus,
   index,
   parent,
   siblings,
@@ -71,6 +78,7 @@ export function Item({
 }: MenuItemProps) {
   const router = useRouter();
   const [submenu, setSubmenu] = useState(false);
+  const [isActive, setIsActive] = useState(false);
 
   //Gives time for closing animation to play
   const [closing, setClosing] = useState(false);
@@ -109,12 +117,18 @@ export function Item({
   }
 
   function handleMouseEnter() {
+    setIsActive(true);
     if (
       itemRef.current?.matches(":hover") &&
-      !submenuContainerRef.current?.matches(":hover")
+      !submenuContainerRef.current?.matches(":hover") &&
+      !isClosing
     ) {
       itemRef.current.focus();
     }
+  }
+
+  function handleMouseLeave() {
+    setIsActive(false);
   }
 
   function handleBlur() {
@@ -122,6 +136,7 @@ export function Item({
       itemRef.current?.matches(":focus") ||
       itemRef.current?.querySelector(":focus");
     if (!isItemFocused) {
+      setIsActive(false);
       setClosing(true);
     }
   }
@@ -146,12 +161,14 @@ export function Item({
       switch (e.key) {
         case "ArrowDown": {
           if (siblings && index + 1 < siblings.length) {
+            setIsActive(false);
             siblings[index + 1].current?.focus();
           }
           break;
         }
         case "ArrowUp": {
           if (index > 0 && siblings) {
+            setIsActive(false);
             siblings[index - 1].current?.focus();
           }
           break;
@@ -163,7 +180,18 @@ export function Item({
           break;
         }
         case "Escape": {
-          onClose();
+          onCloseAndFocus();
+          break;
+        }
+        case "Backspace": {
+          if (parent && parent.current) {
+            // In a submenu - go back to parent
+            parent.current.focus();
+          } else {
+            // At top level - close entirely
+            onCloseAndFocus();
+          }
+          break;
         }
         default: {
         }
@@ -209,7 +237,17 @@ export function Item({
         break;
       }
       case "Escape": {
-        onClose();
+        onCloseAndFocus();
+        break;
+      }
+      case "Backspace": {
+        if (parent && parent.current) {
+          // In a submenu - go back to parent
+          parent.current.focus();
+        } else {
+          // At top level - close entirely
+          onCloseAndFocus();
+        }
         break;
       }
       default: {
@@ -233,12 +271,14 @@ export function Item({
     switch (e.key) {
       case "ArrowDown": {
         if (siblings && index + 1 < siblings.length) {
+          setIsActive(false);
           siblings[index + 1].current?.focus();
         }
         break;
       }
       case "ArrowUp": {
         if (index > 0 && siblings) {
+          setIsActive(false);
           siblings[index - 1].current?.focus();
         }
         break;
@@ -253,7 +293,17 @@ export function Item({
         break;
       }
       case "Escape": {
-        onClose();
+        onCloseAndFocus();
+        break;
+      }
+      case "Backspace": {
+        if (parent && parent.current) {
+          // In a submenu - go back to parent
+          parent.current.focus();
+        } else {
+          // At top level - close entirely
+          onCloseAndFocus();
+        }
         break;
       }
       default: {
@@ -266,8 +316,10 @@ export function Item({
     case "link":
       return (
         <li
+          className={classNames({ [styles.active]: isActive })}
           tabIndex={0}
           onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
           onBlur={() => setTimeout(handleBlur, 0)}
           onKeyDown={(e) => handleKeydownLink(e, item.href)}
           ref={itemRef}
@@ -295,6 +347,7 @@ export function Item({
           onBlur={() => setTimeout(handleBlur, 0)}
           onKeyDown={handleKeydownSubmenu}
           className={classNames({
+            [styles.active]: isActive,
             [styles.submenu_open]: submenu,
             [styles.flip_arrow]: direction === "left",
             [styles.closing]: closing,
@@ -315,7 +368,9 @@ export function Item({
                 parent={itemRef}
                 itemRefs={itemsRef ?? []}
                 direction={direction}
+                isClosing={closing}
                 onClose={onClose}
+                onCloseAndFocus={onCloseAndFocus}
               />
             )}
           </div>
@@ -324,10 +379,16 @@ export function Item({
     case "action":
       return (
         <li
+          className={classNames({ [styles.active]: isActive })}
           role="menuitem"
           tabIndex={0}
           ref={itemRef}
-          onMouseEnter={() => itemRef.current?.focus()}
+          onMouseEnter={() => {
+            setIsActive(true);
+            itemRef.current?.focus();
+          }}
+          onMouseLeave={handleMouseLeave}
+          onBlur={() => setTimeout(handleBlur, 0)}
           onClick={() => {
             item.onClick();
             onClose();
@@ -355,20 +416,26 @@ interface SubMenuPops {
   itemRefs: React.RefObject<HTMLLIElement>[];
   parent?: React.RefObject<HTMLLIElement>;
   direction?: "right" | "left";
+  isClosing: boolean;
   onClose: () => void;
+  onCloseAndFocus: () => void;
 }
 export function SubMenu({
   submenu,
   itemRefs,
   parent,
   direction,
+  isClosing,
   onClose,
+  onCloseAndFocus,
 }: SubMenuPops) {
   const menuRef = useRef<HTMLUListElement | null>(null);
 
-  const actionableIndexes = submenu
-    .map((item, i) => (item.type !== "decoration" ? i : null))
-    .filter((i): i is number => i !== null);
+  const actionableIndexes = useRef(
+    submenu
+      .map((item, i) => (item.type !== "decoration" ? i : null))
+      .filter((i): i is number => i !== null)
+  );
 
   return (
     <ul
@@ -389,12 +456,14 @@ export function SubMenu({
         return (
           <Item
             item={item}
+            isClosing={isClosing}
             onClose={onClose}
+            onCloseAndFocus={onCloseAndFocus}
             direction={direction}
             parent={parent}
             siblings={itemRefs}
-            itemRef={itemRefs[actionableIndexes.indexOf(i)]}
-            index={actionableIndexes.indexOf(i)}
+            itemRef={itemRefs[actionableIndexes.current.indexOf(i)]}
+            index={actionableIndexes.current.indexOf(i)}
             key={i}
           />
         );
@@ -404,19 +473,23 @@ export function SubMenu({
 }
 
 interface DropdownMenuProps {
-  label: string;
+  label: React.ReactNode;
   menu: Item[];
   containerRef?: React.RefObject<HTMLElement>;
+  buttonStyle?: React.CSSProperties;
 }
 export default function DropdownMenu({
   label,
   menu,
   containerRef,
+  buttonStyle,
 }: DropdownMenuProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [direction, setDirection] = useState<"left" | "right" | undefined>();
   const menuRef = useRef<HTMLUListElement | null>(null);
   const observerRef = useRef<ResizeObserver | null>(null);
+  const buttonRef = useRef<HTMLButtonElement | null>(null);
+  const shouldFocusParent = useRef(false);
 
   //Gives time for closing animation to play
   const [closing, setClosing] = useState(false);
@@ -430,6 +503,11 @@ export default function DropdownMenu({
       timerRef.current = setTimeout(() => {
         setMenuOpen(false);
         setClosing(false);
+        // Focus button after menu closes if requested
+        if (shouldFocusParent.current) {
+          buttonRef.current?.focus();
+          shouldFocusParent.current = false;
+        }
       }, closingTime);
     }
   }, [closing]);
@@ -439,6 +517,16 @@ export default function DropdownMenu({
     }
     setClosing(false);
     setMenuOpen(true);
+    buttonRef.current?.focus();
+  }
+
+  function closeMenuAndFocus() {
+    shouldFocusParent.current = true;
+    setClosing(true);
+  }
+
+  function closeMenu() {
+    setClosing(true);
   }
 
   //Adds event listeners when menu opens, removes them when it closes
@@ -503,7 +591,7 @@ export default function DropdownMenu({
   const escapeKey = useCallback(
     (e: KeyboardEvent | globalThis.KeyboardEvent) => {
       if (e.key === "Escape") {
-        setClosing(true);
+        closeMenuAndFocus();
       }
     },
     []
@@ -516,12 +604,14 @@ export default function DropdownMenu({
     }
   }, []);
 
-  const actionableIndexes = menu
-    .map((item, i) => (item.type !== "decoration" ? i : null))
-    .filter((i): i is number => i !== null);
+  const actionableIndexes = useRef(
+    menu
+      .map((item, i) => (item.type !== "decoration" ? i : null))
+      .filter((i): i is number => i !== null)
+  );
 
-  const itemRefs = useRef<Array<React.RefObject<HTMLLIElement>>>(
-    actionableIndexes.map(() => React.createRef<HTMLLIElement>())
+  const itemRefs = useRef(
+    actionableIndexes.current.map(() => React.createRef<HTMLLIElement>())
   );
 
   function handleButtonKeydown(e: React.KeyboardEvent<HTMLButtonElement>) {
@@ -536,6 +626,9 @@ export default function DropdownMenu({
     if (e.key === "ArrowDown") {
       itemRefs.current[0].current?.focus();
     }
+    if (e.key === "Escape" || e.key === "Backspace") {
+      closeMenuAndFocus();
+    }
   }
 
   return (
@@ -546,12 +639,14 @@ export default function DropdownMenu({
     >
       <button
         onClick={() => {
-          menuOpen ? setClosing(true) : openMenu();
+          menuOpen ? closeMenu() : openMenu();
         }}
         onKeyDown={handleButtonKeydown}
         aria-haspopup="true"
         aria-expanded={menuOpen}
         aria-label={`Click to ${menuOpen ? `close` : `open`} dropdown menu`}
+        ref={buttonRef}
+        style={buttonStyle}
       >
         {label}
       </button>
@@ -574,10 +669,12 @@ export default function DropdownMenu({
             return (
               <Item
                 item={item}
-                itemRef={itemRefs.current[actionableIndexes.indexOf(i)]}
+                itemRef={itemRefs.current[actionableIndexes.current.indexOf(i)]}
+                isClosing={closing}
                 onClose={() => setClosing(true)}
+                onCloseAndFocus={closeMenuAndFocus}
                 direction={direction}
-                index={actionableIndexes.indexOf(i)}
+                index={actionableIndexes.current.indexOf(i)}
                 siblings={itemRefs.current}
                 key={i}
               />

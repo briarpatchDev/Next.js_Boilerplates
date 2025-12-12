@@ -7,8 +7,8 @@ import classNames from "classnames";
 import { ToastComponentProps } from "./createToast";
 
 export default function Toast({
-  type,
   message,
+  type,
   closeFunction,
   title,
   autoClose = true,
@@ -25,10 +25,8 @@ export default function Toast({
   return (
     <div
       className={classNames(styles.temp_toast, styles[type])}
-      role={type === "error" || type === "warning" ? "alert" : "status"}
-      aria-live={
-        type === "error" || type === "warning" ? "assertive" : "polite"
-      }
+      role={type === "error" ? "alert" : "status"}
+      aria-live={type === "error" ? "assertive" : "polite"}
       aria-atomic="true"
     >
       <div className={styles.message_container}>

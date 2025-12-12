@@ -3,7 +3,7 @@
   display: flex;
   flex-direction: column;
   border-radius: 0.4rem;
-  padding: 0.2rem;
+  padding: 0.2rem 0;
   background-color: light-dark(rgb(245, 245, 245), rgb(95, 95, 95));
   color: light-dark(black, white);
   border: 0.03rem solid light-dark(black, white);
@@ -15,22 +15,23 @@
 }
 
 .context_menu li,
-.context_menu .blank {
+.context_menu .space {
   width: 20rem;
 }
 
-.context_menu .blank {
+.context_menu .space {
   height: 1.2rem;
 }
 
 .context_menu li {
   border-radius: 0.4rem;
   height: 2.4rem;
+  margin: 0 0.2rem;
   list-style: none;
   position: relative;
 }
 
-.context_menu li > div {
+.li_content_wrapper {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -41,26 +42,36 @@
   border-radius: 0.4rem;
 }
 
-.context_menu li.submenu_open > div {
+.submenu_open > .li_content_wrapper {
   background-color: light-dark(rgb(150, 150, 150), rgb(60, 60, 60));
   color: light-dark(white, rgb(255, 255, 255));
 }
 
-.context_menu li.submenu_open > div .right_arrow {
+.context_menu li.submenu_open > .li_content_wrapper .right_arrow {
   fill: white;
 }
 
-.context_menu li > div:hover {
+.context_menu li:focus > .li_content_wrapper {
+  outline: none;
+  background-color: rgb(40, 40, 255);
+  color: light-dark(white, white);
+}
+
+.context_menu li:focus {
+  outline: none;
   background-color: rgb(40, 40, 255);
   color: light-dark(white, white);
 }
 
 .context_menu li:hover {
-  background-color: rgb(40, 40, 255);
-  color: light-dark(white, white);
+  background-color: light-dark(rgb(210, 210, 210), rgb(75, 75, 75));
 }
 
-.context_menu li > div:hover .right_arrow {
+.context_menu .active:hover {
+  background-color: rgb(40, 40, 255);
+}
+
+.li_content_wrapper :focus .right_arrow {
   fill: white;
 }
 

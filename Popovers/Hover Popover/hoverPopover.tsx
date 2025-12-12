@@ -25,7 +25,7 @@ import { throttle } from "lodash";
 interface HoverPopoverProps {
   children: React.ReactNode;
   panel: React.ReactNode;
-  panelId?: string;
+  panelId: string;
   direction: Direction;
   offset?: number;
   offsetPadding?: boolean;
@@ -34,7 +34,7 @@ interface HoverPopoverProps {
   shiftPanelPercent?: number;
   fadeEffect?: boolean;
   closingTime?: number;
-  panelRole?: string;
+  panelRole?: "dialog" | "menu";
   ariaLabelChildren?: string;
   ariaLabelPanel?: string;
   containerRef?: React.RefObject<HTMLElement>;
@@ -352,6 +352,8 @@ export default function HoverPopover({
       className={styles.expandable}
       aria-label={ariaLabelChildren}
       aria-describedby={panelId}
+      aria-haspopup={panelRole}
+      aria-controls={active ? panelId : undefined}
     >
       {children}
       {active && (
