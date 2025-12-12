@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 
-const excludedPaths = ["src/app/dev"];
+const excludedPaths = ["src/app/test_pages"];
 
 // Move the excluded paths back
 excludedPaths.forEach((excludedPath) => {

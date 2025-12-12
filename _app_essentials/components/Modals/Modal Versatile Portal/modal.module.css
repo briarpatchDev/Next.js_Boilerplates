@@ -1,0 +1,110 @@
+.backdrop {
+  background-color: var(--modalBackdropColor);
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  overflow-y: scroll;
+  padding: 2vh 0 25vh;
+}
+
+.animate.backdrop {
+  animation: backdropAppear 0.3s;
+}
+
+.backdrop.closing {
+  animation: backdropDisappear 0.4s;
+}
+
+@keyframes backdropAppear {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes backdropDisappear {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+.transparent {
+  background-color: transparent;
+}
+
+.centered {
+  padding: 0 0 0 0;
+}
+
+.modal {
+  border: var(--smallBorder);
+  background-color: var(--background);
+  height: max-content;
+  padding: 1.2rem 0rem;
+  margin: auto 2vw;
+  cursor: default;
+  max-width: 95vw;
+  width: max-content;
+  min-width: max-content;
+  position: relative;
+}
+
+.top_padding {
+  padding-top: 3rem;
+}
+
+.extra_top_padding {
+  padding-top: 3.6rem;
+}
+
+.unstyled {
+  border: none;
+  background-color: transparent;
+  padding: 0;
+}
+
+.close_button {
+  all: unset;
+  box-sizing: border-box;
+  background-color: var(--buttonBackground);
+  border: var(--smallBorder);
+  height: 2.4rem;
+  width: 2.4rem;
+  padding: 0.6rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2rem;
+  cursor: pointer;
+  border-radius: 1.2rem;
+  position: absolute;
+  right: 1.2rem;
+  top: 1.2rem;
+}
+
+.close_button:focus {
+  outline: 0.1rem solid var(--foreground);
+  background-color: var(--buttonHoverColor);
+}
+
+.close_icon {
+  height: 100%;
+  width: 100%;
+  pointer-events: none;
+  fill: var(--iconColor);
+}

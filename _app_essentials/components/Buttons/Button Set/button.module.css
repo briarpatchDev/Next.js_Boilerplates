@@ -1,0 +1,130 @@
+.button {
+  --height: 4.2rem;
+  --buttonColor: rgb(45, 104, 200);
+  all: unset;
+  box-sizing: border-box;
+  cursor: pointer;
+  height: max-content;
+  min-height: var(--height);
+  width: max-content;
+  max-width: 24rem;
+  padding: 0.4rem 1.2rem;
+  display: flex;
+  flex-shrink: 0;
+  justify-content: center;
+  align-items: center;
+  column-gap: 1.2rem;
+  text-align: center;
+  text-wrap: pretty;
+  user-select: none;
+  font-size: 1.8rem;
+  border-radius: 0.8rem;
+  box-shadow: 0px 2px 1px 1px rgba(0, 0, 0, 0.3);
+  transition: all 0.15s;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-user-select: none;
+  transform: translateZ(0); /* Helps Mobile */
+  will-change: transform;
+  /* color: light-dark(var(--grey-text), var(--grey-text)); */
+  color: light-dark(rgb(240, 240, 240), rgb(230, 230, 230));
+}
+
+.default {
+  min-width: 16rem;
+}
+
+.full {
+  flex: 1;
+  width: 100%;
+  max-width: 100%;
+}
+
+.button:focus-visible {
+  outline: 0.1rem solid var(--focus-color);
+  outline-offset: 0.2rem;
+}
+
+.button.active {
+  transition: all 0.1s;
+  transform: translateY(0.04rem) scale(0.98) translateZ(0); /* Helps Mobile */
+  will-change: transform;
+  box-shadow: 0px 1px 0px 0px rgba(0, 0, 0, 0.3);
+}
+
+.primary:hover,
+.secondary:hover,
+.tertiary:hover {
+  transition: all 0.15s;
+}
+
+.primary {
+  border: 0.2rem solid rgba(0, 0, 0, 0);
+  font-weight: bolder;
+  background-color: var(--buttonColor);
+}
+
+.secondary {
+  border: 0.2rem solid var(--buttonColor);
+  /* color: light-dark(var(--buttonColor), var(--grey-text)); */
+  color: light-dark(var(--buttonColor), rgb(230, 230, 230));
+  font-weight: bolder;
+  background-color: var(--background);
+}
+
+.tertiary {
+  background-color: transparent;
+  border: 0.1rem solid light-dark(rgba(0, 0, 0, 0.4), rgba(255, 255, 255, 0.4));
+  color: light-dark(rgba(0, 0, 0, 0.8), rgba(255, 255, 255, 0.8));
+}
+
+/* Stops button from changing color after click on IOS */
+/* We can either extend or possibly remove this part */
+@media (hover: hover) {
+  .primary:hover {
+    color: light-dark(rgb(255, 255, 255), rgb(245, 245, 245));
+    filter: brightness(1.1);
+  }
+  .secondary:hover {
+    background-color: light-dark(rgb(245, 245, 245), rgb(60, 60, 60));
+    color: light-dark(var(--buttonColor), rgb(245, 245, 245));
+  }
+  .tertiary:hover {
+    border-color: light-dark(var(--buttonColor), rgb(240, 240, 240));
+    color: light-dark(rgba(0, 0, 0, 1), rgba(255, 255, 255));
+  }
+}
+
+.text_container {
+  width: 100%;
+}
+
+.icon_container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.icon_container > * {
+  width: calc(var(--height) * 0.75);
+  height: calc(var(--height) * 0.75);
+  object-fit: cover;
+  object-position: center center;
+}
+
+.disabled {
+  background-color: transparent;
+  cursor: auto;
+  color: rgb(150, 150, 150);
+  border-color: rgb(150, 150, 150);
+  border-width: 0rem;
+  border-top-width: 0.05rem;
+  font-weight: 100;
+  opacity: 0.6;
+}
+
+.disabled:hover {
+  background-color: transparent;
+  color: rgb(150, 150, 150);
+  border-color: rgb(150, 150, 150);
+  filter: brightness(1);
+}

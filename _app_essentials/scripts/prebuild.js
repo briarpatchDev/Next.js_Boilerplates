@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 
-const excludedPaths = ["src/app/dev"];
+const excludedPaths = ["src/app/test_pages"];
 
 // Create _temp directory if it doesn't exist
 if (!fs.existsSync("_temp")) {

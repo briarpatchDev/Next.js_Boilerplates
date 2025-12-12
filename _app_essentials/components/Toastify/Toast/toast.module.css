@@ -1,0 +1,112 @@
+.toast {
+  --height: 8rem;
+  --width: 36rem;
+  --buttonWidth: 1.6rem;
+  height: var(--height);
+  width: var(--width);
+  color: var(--wb);
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  position: relative;
+  border-radius: 0.4rem;
+  padding: calc(var(--height) / 20) 0;
+  margin-bottom: calc(var(--height) / 40);
+  box-shadow: 0.4rem calc(var(--height) / 40) calc(var(--width) / 40) 0px
+    rgba(0, 0, 0, 0.6);
+}
+
+.toast.success {
+  background-color: darkolivegreen;
+}
+
+.toast.warning {
+  background-color: goldenrod;
+}
+
+.toast.error {
+  background-color: brown;
+}
+
+.toast.info {
+  background-color: cornflowerblue;
+}
+
+.toast.news {
+  border: var(--smallBorder);
+  background-color: var(--softBackground);
+  color: var(--foreground);
+}
+
+.icon_container {
+  display: flex;
+  justify-content: center;
+  width: calc(var(--width) / 4);
+}
+
+.icon_container svg {
+  height: calc(var(--height) * 0.6);
+  width: auto;
+  fill: var(--wb);
+}
+
+.icon_container.news svg {
+  fill: var(--bw);
+}
+
+.message_container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  row-gap: 0.2rem;
+  max-width: calc(var(--width) * 3 / 4 - 3 * var(--buttonWidth));
+  text-wrap: balance;
+}
+
+.message_container > div {
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: bolder;
+}
+
+.message {
+  display: flex;
+  font-size: 1.6rem;
+}
+
+.message.indent {
+  padding-left: 0.2rem;
+}
+
+.close_icon_btn {
+  all: unset;
+  box-sizing: border-box;
+  cursor: pointer;
+  position: absolute;
+  top: calc(var(--buttonWidth) / 2);
+  right: calc(var(--buttonWidth) / 2);
+  padding: calc(var(--buttonWidth) / 2);
+  padding-bottom: calc(var(--buttonWidth) / 4);
+}
+
+.close_icon_btn svg {
+  width: var(--buttonWidth);
+  height: auto;
+  fill: var(--wb);
+}
+
+.close_icon_btn.news svg {
+  fill: var(--foreground);
+}
+
+@media (prefers-color-scheme: dark) {
+  .toast.success {
+    background-color: rgb(109, 139, 58);
+  }
+}
