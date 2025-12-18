@@ -38,7 +38,6 @@ function createToast(
           type={type}
           message={message}
           title={title}
-          icon={icon}
           autoClose={autoClose}
           closeFunction={closeToast}
           duration={duration}
